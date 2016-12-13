@@ -13,15 +13,18 @@
 ### Capa de red
 - Direccionamiento lógico
 - Selección de ruta para la comunicación
+
 ### Capa de transporte
 - Elige protocolo de transporte TCP / UDP
 - Crea los paquetes de datos a mandar
 
 ### Capa de sesión
 - Mantiene la conexión activa entre dos dispositivos
+
 ### Capa de presentación
 - Traduce información
 - Encripta / Desencripta
+
 ### Capa de aplicación
 - Define el protocolo de transmisión que se va a usar
 
