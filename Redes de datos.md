@@ -48,12 +48,11 @@ Forma de transmisión analógica
 |Error|< 4|
 
 ## RS-232
-
 Se utiliza un único cable, y la tensión de salida se mide entre este y tierra. Es barato pero admite distancias muy cortas. Ej: mouse
 
 ## RS-485
-
 Se utilizan dos cables, y la tensión de salida se mide entre estos. Es más inmune al ruido por lo que admite distancias largas pero es más costoso.
+
 ----
 # Acceso al Medio (MAC)
 
@@ -120,7 +119,7 @@ La familia de profibus es una arquitectura abierta que permite la interconexión
 
 Existen 3 protocolos:
 
-#### Profibus-DP
+##### Profibus-DP
 Es un bus de dispositivos y el más usado. Implementa las capas 1 y 2 del modelo OSI + una interfaz con el usuario.
 En la capa 1 puede usar RS-485 o fibra óptica y en la 2 Maestro-Esclavo o pasaje de Token.
 
