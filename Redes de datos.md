@@ -29,31 +29,31 @@
 # Capa
 ## Lazo 20mA
 
-  Forma de transmisión digital
+Forma de transmisión digital
 
-  |Señal|Corriente|
-  |---|---|
-  |0|No hay|
-  |1|Hay|
+|Señal|Corriente|
+|---|---|
+|0|No hay|
+|1|Hay|
 
 
 ## Lazo 4-20mA
 
-  Forma de transmisión analógica
+Forma de transmisión analógica
 
-  |Señal|Corriente (mA)|
-  |---|---|
-  |0%|4|
-  |100%|20|
-  |Error|< 4|
+|Señal|Corriente (mA)|
+|---|---|
+|0%|4|
+|100%|20|
+|Error|< 4|
 
 ## RS-232
 
-    Se utiliza un único cable, y la tensión de salida se mide entre este y tierra. Es barato pero admite distancias muy cortas. Ej: mouse
+Se utiliza un único cable, y la tensión de salida se mide entre este y tierra. Es barato pero admite distancias muy cortas. Ej: mouse
 
 ## RS-485
 
-    Se utilizan dos cables, y la tensión de salida se mide entre estos. Es más inmune al ruido por lo que admite distancias largas pero es más costoso.
+Se utilizan dos cables, y la tensión de salida se mide entre estos. Es más inmune al ruido por lo que admite distancias largas pero es más costoso.
 ----
 # Acceso al Medio (MAC)
 
@@ -75,13 +75,15 @@
 ## No Determinísticos
 
 ### CSMA
-  Escucha el medio y si no hay nadie transimitiendo tranmite (CS), todos los dispositivos tienen la misma posibilidad de transmitir (MA)
+Escucha el medio y si no hay nadie transimitiendo tranmite (CS), todos los dispositivos tienen la misma posibilidad de transmitir (MA)
 
-  - **CD:** Detecta colisiones, si dos empiezan a hablar en el mismo instante, el que detecta la colisión envía un mensaje de JAM y esperan un tiempo aleatorio para volver a transmitir. En el caso de ser binary backoff, el tiempo de espera se va duplicando por cada colisión
+- **CD:** Detecta colisiones, si dos empiezan a hablar en el mismo instante, el que detecta la colisión envía un mensaje de JAM y esperan un tiempo aleatorio para volver a transmitir. En el caso de ser binary backoff, el tiempo de espera se va duplicando por cada colisión
 
-  - **CA:** Evita colisiones,  el nodo que quiere transmitir envía RTS, el receptor responde con CTS a todos los nodos para evitar que el resto mande, una vez terminada el receptor responde con ACK a todos los nodos para informar que terminó la transmisión.
+- **CA:** Evita colisiones,  el nodo que quiere transmitir envía RTS, el receptor responde con CTS a todos los nodos para evitar que el resto mande, una vez terminada el receptor responde con ACK a todos los nodos para informar que terminó la transmisión.
 
-  - **BA:** es una especie de CA, si dos nodos quieren transmitir, se frenan y transmite el de mayor prioridad, el otro transite en el próximo ciclo.
+- **BA:** es una especie de CA, si dos nodos quieren transmitir, se frenan y transmite el de mayor prioridad, el otro transite en el próximo ciclo.
+
+
 ---
 
 # HART
@@ -106,12 +108,12 @@ Se pueden clasificar en 3 grupos:
 
 
 
-  ### Profinet
-  Protocolo de estandarización que adapta el hardware de Ethernet a las necesidades de la industria. Implementa las siguientes tácticas:
+### Profinet
+Protocolo de estandarización que adapta el hardware de Ethernet a las necesidades de la industria. Implementa las siguientes tácticas:
 
-  - **Fast fowarding:** el codigo que identifica al nodo destino se mueve adelante de la trama para que la verificicación se haga lo antes posible
+- **Fast fowarding:** el codigo que identifica al nodo destino se mueve adelante de la trama para que la verificicación se haga lo antes posible
 
-  - **Dyanmic Frame Packaging:** el tamaño de los paquetes depende del tamaño del dato, esto evita los bits de relleno
+- **Dyanmic Frame Packaging:** el tamaño de los paquetes depende del tamaño del dato, esto evita los bits de relleno
 
 ### Profibus
 La familia de profibus es una arquitectura abierta que permite la interconexión de dispositivos de distintos fabricantes.
@@ -157,18 +159,18 @@ Es el estándar de red más conocido. Trabaja a altas velocidades y bajo costo. 
 **Frame brusting:** Es un técnica que implementa Gigabit ethernet cuando tiene que mandar datos pequeños. Permite mandar mas de un dato en un mismo tiempo de transmisión. El primer dato se manda normal en caso de ocurrir una colisión. Una vez que se adquirió el canal más datos pueden mandarse como ráfaga antes dentro del mismo tiempo de transmisión.
 
 ## Trama
-  - Comienzo
-    - Preambulo
-  - Direcciones
-    - Destino
-    - Origen
-  - Datos
-    - Tipo
-    - Dato
-  - Errores
-    - CRC
-  - Fin
-    - Espacio
+- Comienzo
+  - Preambulo
+- Direcciones
+  - Destino
+  - Origen
+- Datos
+  - Tipo
+  - Dato
+- Errores
+  - CRC
+- Fin
+  - Espacio
 
 ---
 
