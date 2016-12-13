@@ -27,120 +27,178 @@
 
 ----
 # Capa Física
-## Medio de transmisión
-  - #### Guiados
-    - **Cable coaxil**
-    - **Cable UTP**
-    - **Fibra óptica:** envía pulsos de luz.
-      - Múltimodo: barato, distancias cortas. La luz viaja por más de un camino.
+  ## Lazo 20mA
+  Forma de transmisión digital
 
-      - Mónomodo: caro, distancias largas. La luz viaja por un único camino.
+  |Señal|Corriente|
+  |---|---|
+  |0 | No hay|
+  |1 | Hay|
 
-  - #### No Guiados
-    - Ondas de radio
-    - Microondas
-    - Luz
 
-## Codificación
-  - #### Lazo 20mA
-   - 0 => no hay corriente
-   - 1 => hay
-  - #### Lazo 4-20mA
-    - 0% => 4mA
-    - 100% => 20mA
-    - error => <4mA
-  - #### RS-232
-    Único cable, V= V+ - tierra, distancias cortas, barato. Ej: mouse
-  - #### RS-485
-    Dos cables, V = V+ - V-, distancias largas, costoso.
+  ## Lazo 4-20mA
+  Forma de transmisión analógica
+
+  |Señal|Corriente (mA)|
+  |---|---|
+  |0% | 4|
+  |100% | 20|
+  | Error | < 4 |
+
+  ## RS-232
+    Se utiliza un único cable, y la tensión de salida se mide entre este y tierra. Es barato pero admite distancias muy cortas. Ej: mouse
+
+  ## RS-485
+    Se utilizan dos cables, y la tensión de salida se mide entre estos. Es más inmune al ruido por lo que admite distancias largas pero es más costoso.
 ----
 # Acceso al Medio (MAC)
 
 ## Determinísticos
 
-- #### Pasaje de token
-  Los nodos se van pasando un token, el que tiene el token puede transmitir por un tiempo determinado
-- #### Maestro-Esclavo
+### Pasaje de token
+  Los nodos se van pasando una trama que contiene un token que indica el nodo destino y los datos. Cuando el token llega al nodo destino, lo copia, lo marca y lo pasa. Cuando vuelve al emisor, este lo retira, dejando el token libre para quien lo necesite.
+
+### Maestro-Esclavo
   El maestro es el que controla el medio, decide con cuál esclavo se va a comunicar y cuanto tiempo le da.
-- #### Token Híbrido
-  El token pasa por los maestros que están conectados a sus esclavos a través de un profibus.
-- #### Productor-Consumidor
+
+### Token Híbrido
+  Utiliza el método de pasaje de token entre maestros para ver quien tiene control del bus.
+  La comunicación a sus esclavos se hace mediante el bus, que podría ser un profibus.
+
+### Productor-Consumidor
   Los nodos tienen un tiempo para poner su dato en el bus dado por un árbitro, el dato se lee por los demás esclavos y se identifica según su contenido.
 
 ## No Determinísticos
 
-- #### CSMA
+### CSMA
   Escucha el medio y si no hay nadie transimitiendo tranmite (CS), todos los dispositivos tienen la misma posibilidad de transmitir (MA)
-  - **CD:** Detecta colisiones, si dos empiezan a hablar en el mismo instante, el que detecta la colisión envía un mensaje de JAM y esperan un tiempo aleatorio para volver a transmitir.
+
+  - **CD:** Detecta colisiones, si dos empiezan a hablar en el mismo instante, el que detecta la colisión envía un mensaje de JAM y esperan un tiempo aleatorio para volver a transmitir. En el caso de ser binary backoff, el tiempo de espera se va duplicando por cada colisión
+
   - **CA:** Evita colisiones,  el nodo que quiere transmitir envía RTS, el receptor responde con CTS a todos los nodos para evitar que el resto mande, una vez terminada el receptor responde con ACK a todos los nodos para informar que terminó la transmisión.
-----
-# Buses
-- #### Sensor
-  BIT
-- #### Device
-  BYTE
-- #### Field
-  PAQUETE
+
+  - **BA:** es una especie de CA, si dos nodos quieren transmitir, se frenan y transmite el de mayor prioridad, el otro transite en el próximo ciclo.
+---
+
+# HART
+
+High Adressable Remote Trasducer. Se emplea para la configuración remota. No es un bus de campo ya que conecta los instrumentos a un controlador de E/S. Utiliza Lazo 4-20mA.
+
+---
+# Buses de campo
+
+Son buses utilizados en la industria para conectar PLCs con sensores y actuadores. Se caracterizan por ser de instalación simple y costos bajos ya que se comparte un bus entre varios dispositivos. Es de comunicación bidireccional.
+
+Antiguamente se conectaban los sensores a un CPU mediante lazo 4-20mA y este procesaba las entradas y envíaba la información a los actuadores.
+
+Se pueden clasificar en 3 grupos:
 
 
-## Profibus
-Bus de campo estándar para tecnologías de automatización.
-Usan las capas 1, 2 y 7 del modelo OSI.
+|Grupo| Inteligencia | Velocidad | Tipo de dato| Función|
+|---|---|---|
+|De campo|Alta|Baja|Paquete| Conectan PLCs (Programable Logic Controller)|
+|De dispositivos| Baja | Baja | Bit/Byte | Conectan dispositivos|
+|De sensores|Nula|Alta|Bit|Transforman magnitudes físicas en señales digitales|
 
-- #### Profibus-DP
-  Alta velocidad y bajo costo
-- #### Profibus-PA
-  Unica linea de datos y alimentación, baja velocidad
-- #### Profibus-FMS
-  Se está reemplzando por Ethernet por ser de uso p2p.
 
-## ProfiNET
-Adatpa el protocolo de Ethernet a las neceisdades de la industria de la automatización.
 
-#Ethernet
+  ### Profinet
+  Protocolo de estandarización que adapta el hardware de Ethernet a las necesidades de la industria. Implementa las siguientes tácticas:
+
+  - **Fast fowarding:** el codigo que identifica al nodo destino se mueve adelante de la trama para que la verificicación se haga lo antes posible
+
+  - **Dyanmic Frame Packaging:** el tamaño de los paquetes depende del tamaño del dato, esto evita los bits de relleno
+
+
+  ### Profibus
+  La familia de profibus es una arquitectura abierta que permite la interconexión de dispositivos de distintos fabricantes.
+
+  Existen 3 protocolos:
+
+  #### Profibus-DP
+  Es un bus de dispositivos y el más usado. Implementa las capas 1 y 2 del modelo OSI + una interfaz con el usuario.
+  En la capa 1 puede usar RS-485 o fibra óptica y en la 2 Maestro-Esclavo o pasaje de Token.
+
+  ##### Profibus-PA
+  Es parecido al DP pero está pensado para trabajar en zonas no seguras, como por ejemplo con riesgo de explosión. Permite que la alimentación de los dispositivos sea a través del bus.
+
+  ##### Profibus-FMS
+  Pertenece a los buses de campo, tiene mayor funcionalidad respecto a DP y AP. Se utiliza para conectar PLCs y tiene lógica a nivel de control. Implementa además la capa 7 del modelo OSI.
+
+  ### LonWorks
+  Usado para la automatización de hogares, transporte, electricidad o industria. No está sujeto a buses físicos unicamente. Se pueden pueden conectar una enorme cantidad de dispositivos. El protocolo se encarga de las comunicaciones entre los dispositivos.
+
+  ### Foundation Field
+  Usado en la comunicación entre los dispositivos de campo y los sistemas de supervisación de plata. Entraría en el grupo de los buses de campo. Ofrece control distribuído.
+
+  Tiene 2 implementaciones:
+  - **H1:** De baja velocidad pero provee alimentación por el bus
+  - **HSE:** High Speed Ethernet. Alta velocidad pero no provee alimentación por cable.
+
+
+  ### CANbus
+  Usado en la industria automotriz, utiliza dos buses para un mayor protección contra fallos (la señal se envía por ambos buses). Utiliza Productor-Consumidor. Permite resolver colisiones por prioridad.
+
+
+  ### Sensor AS-I
+  No buscar ser un bus de campo para la automatización unviersal. Se centra en conectar sensores y actuadores con el menor costo y complejidad posible. Es de alta velocidad y utiliza Maestro-Esclavo.
+
+
+---
+# Ethernet
+Es el estándar de red más conocido. Trabaja a altas velocidades y bajo costo. Utiliza CSMA/CD con binary backoff como controlo de acceso al medio. La adquisisión del canal se da cuando un nodo logra transmitir 512 bits a partir del preámbulo sin colisiones. Se maneja con el método de mejor esfuerzo, esto significa que manda los datos pero no asegura que sea infalible (por ejemplo si una trama colisiona 16 veces se descartaría). Son los protocolos de alto nivel los que se encargan de enmendar estos errores.
+
+
+**Round Trip Timing:** Es el tiempo que tarda en volver una señal que fue enviada.
+
+**Frame brusting:** Es un técnica que implementa Gigabit ethernet cuando tiene que mandar datos pequeños. Permite mandar mas de un dato en un mismo tiempo de transmisión. El primer dato se manda normal en caso de ocurrir una colisión. Una vez que se adquirió el canal más datos pueden mandarse como ráfaga antes dentro del mismo tiempo de transmisión.
 
 ## Trama
-  - Preambulo
-  - Destino
-  - Origen
-  - Tipo
+  - Comienzo
+    - Preambulo
+  - Direcciones
+    - Destino
+    - Origen
   - Datos
-  - CRC
-  - Espacio
+    - Tipo
+    - Dato
+  - Errores
+    - CRC
+  - Fin
+    - Espacio
 
-## MAC
-  - CSMA/CD con binary backoff
+---
 
-# 802.11
+# Redes inalámbricas 802.11
+Estas se caracterizan por tener un Bit Error Rate alto, bajos niveles de señal, baja posibilidad de detección de errores y no son seguras. Utiliza CSMA/CA como método de acceso al medio y reconocimiento positivo en el envío de tramas, que consiste en responder con ACK por cada trama recibida.
 
-- BSS = grupo de nodos
-- ESS = grupo de BSS
+El censado del medio puede ser **Físico** (como en Ethernet) o **Virtual** (las tramas contienen un campo que determina el tiempo que va a estar ocupado el medio)
 
-## Movilidad
- - #### Sin transición
- Un nodo no cambia de BSS
- - #### Trans BSS
- Un nodo cambia de BSS pero no de ESS
- - #### Trans ESS
- No posible
+Diferentes implementaciones pueden utilizar **FHSS** o **DSSS**
 
+## Tipos de red
 
-## MAC
-  - CSMA/CA
+|Tipo|Caracteística|
+|---|---|
+|Infrastructure BSS | Nodos conectados por un Acces Point|
+|Independent BSS | Nodos conectados entre sí (sin AP)|
+| ESS | Grupo de BSSs|
+
 
 
 # Bluetooth
-- Alta seguridad
-- Corto alcance
-- Bajo consumo
-- Bajo costo
-- Full duplex
+Es una tecnología inalámbrica de corto alcance. Se caracteriza por ser seguro, de bajo costo y consumo.
 
-##### AFH
-Permite detectar transimisiones en la banda y utilizar otras frecuencias no usadas
+Se clasifican 3 clases de BT según su distancia en metros:
 
-##### Piconet
-Un grupo de 8 dispositivos (1 maestro y 7 eslcavos)
+1. **100m**
+2. **10m**
+3. **1m**
+
+
+Utiliza **AFH** (Adaptive Frecuency Hopping) que permite detectar transimisiones en la banda y utilizar otras frecuencias no usadas.
+
+Un grupo de 8 (máx) dispositivos (1 maestro y 7 eslcavos) se denomina **Piconet**. El maestro transmite en los invervalos pares de tiempo y los esclavos en los intervalos impares, esto hace que la comunicación sea **full-duplex**.
 
 ## BT v3 +HS
 Alta velocidad, configura por Bluetooth pero transmite por wifi
