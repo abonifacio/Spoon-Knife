@@ -1,54 +1,58 @@
 # Modelo OSI
 
-##### Capa Física
+### Capa Física
 - Topologías
 - Medio físico
 - Señalización
 
-###### Capa de enlace de datos
+### Capa de enlace de datos
 - Direccionamiento físico
 - Control de acceso al medio
 - Detección de errores
 
-###### Capa de red
+### Capa de red
 - Direccionamiento lógico
 - Selección de ruta para la comunicación
-###### Capa de transporte
+### Capa de transporte
 - Elige protocolo de transporte TCP / UDP
 - Crea los paquetes de datos a mandar
 
-###### Capa de sesión
+### Capa de sesión
 - Mantiene la conexión activa entre dos dispositivos
-###### Capa de presentación
+### Capa de presentación
 - Traduce información
 - Encripta / Desencripta
-###### Capa de aplicación
+### Capa de aplicación
 - Define el protocolo de transmisión que se va a usar
 
 ----
-# Capa Física
-  ## Lazo 20mA
+# Capa
+## Lazo 20mA
+
   Forma de transmisión digital
 
   |Señal|Corriente|
   |---|---|
-  |0 | No hay|
-  |1 | Hay|
+  |0|No hay|
+  |1|Hay|
 
 
-  ## Lazo 4-20mA
+## Lazo 4-20mA
+
   Forma de transmisión analógica
 
   |Señal|Corriente (mA)|
   |---|---|
-  |0% | 4|
-  |100% | 20|
-  | Error | < 4 |
+  |0%|4|
+  |100%|20|
+  |Error|< 4|
 
-  ## RS-232
+## RS-232
+
     Se utiliza un único cable, y la tensión de salida se mide entre este y tierra. Es barato pero admite distancias muy cortas. Ej: mouse
 
-  ## RS-485
+## RS-485
+
     Se utilizan dos cables, y la tensión de salida se mide entre estos. Es más inmune al ruido por lo que admite distancias largas pero es más costoso.
 ----
 # Acceso al Medio (MAC)
@@ -94,10 +98,10 @@ Antiguamente se conectaban los sensores a un CPU mediante lazo 4-20mA y este pro
 Se pueden clasificar en 3 grupos:
 
 
-|Grupo| Inteligencia | Velocidad | Tipo de dato| Función|
+|Grupo|Inteligencia|Velocidad|Tipo de dato|Función|
 |---|---|---|
-|De campo|Alta|Baja|Paquete| Conectan PLCs (Programable Logic Controller)|
-|De dispositivos| Baja | Baja | Bit/Byte | Conectan dispositivos|
+|De campo|Alta|Baja|Paquete|Conectan PLCs (Programable Logic Controller)|
+|De dispositivos|Baja|Baja| Bit/Byte|Conectan dispositivos|
 |De sensores|Nula|Alta|Bit|Transforman magnitudes físicas en señales digitales|
 
 
@@ -109,39 +113,38 @@ Se pueden clasificar en 3 grupos:
 
   - **Dyanmic Frame Packaging:** el tamaño de los paquetes depende del tamaño del dato, esto evita los bits de relleno
 
+### Profibus
+La familia de profibus es una arquitectura abierta que permite la interconexión de dispositivos de distintos fabricantes.
 
-  ### Profibus
-  La familia de profibus es una arquitectura abierta que permite la interconexión de dispositivos de distintos fabricantes.
+Existen 3 protocolos:
 
-  Existen 3 protocolos:
+#### Profibus-DP
+Es un bus de dispositivos y el más usado. Implementa las capas 1 y 2 del modelo OSI + una interfaz con el usuario.
+En la capa 1 puede usar RS-485 o fibra óptica y en la 2 Maestro-Esclavo o pasaje de Token.
 
-  #### Profibus-DP
-  Es un bus de dispositivos y el más usado. Implementa las capas 1 y 2 del modelo OSI + una interfaz con el usuario.
-  En la capa 1 puede usar RS-485 o fibra óptica y en la 2 Maestro-Esclavo o pasaje de Token.
+##### Profibus-PA
+Es parecido al DP pero está pensado para trabajar en zonas no seguras, como por ejemplo con riesgo de explosión. Permite que la alimentación de los dispositivos sea a través del bus.
 
-  ##### Profibus-PA
-  Es parecido al DP pero está pensado para trabajar en zonas no seguras, como por ejemplo con riesgo de explosión. Permite que la alimentación de los dispositivos sea a través del bus.
+##### Profibus-FMS
+Pertenece a los buses de campo, tiene mayor funcionalidad respecto a DP y AP. Se utiliza para conectar PLCs y tiene lógica a nivel de control. Implementa además la capa 7 del modelo OSI.
 
-  ##### Profibus-FMS
-  Pertenece a los buses de campo, tiene mayor funcionalidad respecto a DP y AP. Se utiliza para conectar PLCs y tiene lógica a nivel de control. Implementa además la capa 7 del modelo OSI.
+### LonWorks
+Usado para la automatización de hogares, transporte, electricidad o industria. No está sujeto a buses físicos unicamente. Se pueden pueden conectar una enorme cantidad de dispositivos. El protocolo se encarga de las comunicaciones entre los dispositivos.
 
-  ### LonWorks
-  Usado para la automatización de hogares, transporte, electricidad o industria. No está sujeto a buses físicos unicamente. Se pueden pueden conectar una enorme cantidad de dispositivos. El protocolo se encarga de las comunicaciones entre los dispositivos.
+### Foundation Field
+Usado en la comunicación entre los dispositivos de campo y los sistemas de supervisación de plata. Entraría en el grupo de los buses de campo. Ofrece control distribuído.
 
-  ### Foundation Field
-  Usado en la comunicación entre los dispositivos de campo y los sistemas de supervisación de plata. Entraría en el grupo de los buses de campo. Ofrece control distribuído.
-
-  Tiene 2 implementaciones:
-  - **H1:** De baja velocidad pero provee alimentación por el bus
-  - **HSE:** High Speed Ethernet. Alta velocidad pero no provee alimentación por cable.
-
-
-  ### CANbus
-  Usado en la industria automotriz, utiliza dos buses para un mayor protección contra fallos (la señal se envía por ambos buses). Utiliza Productor-Consumidor. Permite resolver colisiones por prioridad.
+Tiene 2 implementaciones:
+- **H1:** De baja velocidad pero provee alimentación por el bus
+- **HSE:** High Speed Ethernet. Alta velocidad pero no provee alimentación por cable.
 
 
-  ### Sensor AS-I
-  No buscar ser un bus de campo para la automatización unviersal. Se centra en conectar sensores y actuadores con el menor costo y complejidad posible. Es de alta velocidad y utiliza Maestro-Esclavo.
+### CANbus
+Usado en la industria automotriz, utiliza dos buses para un mayor protección contra fallos (la señal se envía por ambos buses). Utiliza Productor-Consumidor. Permite resolver colisiones por prioridad.
+
+
+### Sensor AS-I
+No buscar ser un bus de campo para la automatización unviersal. Se centra en conectar sensores y actuadores con el menor costo y complejidad posible. Es de alta velocidad y utiliza Maestro-Esclavo.
 
 
 ---
